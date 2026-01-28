@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/spf13/cobra"
 )
+
+const brewPath = "/home/linuxbrew/.linuxbrew/bin/brew"
 
 var systemdServices = []string{"frankenphp", "mysql", "postgresql", "typesense-server", "garage"}
 
@@ -43,8 +46,26 @@ func manageServices(action string) {
 }
 
 func runServiceCommand(name string, arg ...string) {
-	err := exec.Command(name, arg...).Run()
-	if err != nil {
-		fmt.Printf("Failed to execute %s %v: %v\n", name, arg, err)
+	finalName := name
+	finalArgs := arg
+
+	if name == "brew" {
+		finalName = brewPath
+
+		// If running via sudo (e.g. from a system script), switch to the user
+		sudoUser := os.Getenv("SUDO_USER")
+		if sudoUser != "" {
+			finalName = "sudo"
+			finalArgs = append([]string{"-u", sudoUser, brewPath}, arg...)
+		}
+	}
+
+	cmd := exec.Command(finalName, finalArgs...)
+
+	// Inherit environment to ensure Homebrew variables are present
+	cmd.Env = os.Environ()
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Failed to execute %s: %v\n", name, err)
 	}
 }
