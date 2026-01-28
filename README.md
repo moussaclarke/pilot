@@ -95,10 +95,13 @@ pilot rm
 ## TODO
 
 - [ ] Prettier output
-- [ ] Automated Prerequisite check
+- [ ] Automated Prerequisite check including installation or installation instructions
 - [ ] Check service status before up/down
 - [ ] Site info command
 - [ ] Better error handling
+- [ ] Tests
+- [ ] Changelog
+- [ ] More documentation - including .pilot directory structure, overview of the stack
 
 ## Non-goals
 
