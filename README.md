@@ -85,7 +85,7 @@ pilot rm
 
 | Command | Description |
 | --- | --- |
-| `pilot up` | Starts all systemd and brew services. |
+| `pilot up` | Starts all managed services. |
 | `pilot down` | Stops all managed services. |
 | `pilot status` | Displays the current running status of the stack. |
 
