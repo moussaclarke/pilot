@@ -13,27 +13,27 @@ var simple bool
 
 func init() {
 	rootCmd.AddCommand(statusCmd)
-	// Register the local flag
-	statusCmd.Flags().BoolVarP(&simple, "simple", "s", false, "Return only 'up' or 'down' instead of list")
+	statusCmd.Flags().BoolVarP(&simple, "simple", "s", false, "Return only 'up', 'down', or 'partial' instead of list")
 }
 
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Check service status",
-	Long:  "Check the active status of the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
+	Long:  "Check the active status of the currently managed development services.",
 	Run: func(cmd *cobra.Command, args []string) {
-		allUp := true
+		activeCount := 0
+		totalServices := len(systemdServices) + 1 // +1 for mailpit
 
 		// Check Systemd Services
 		var systemdStatus strings.Builder
 		for _, s := range systemdServices {
 			out, _ := exec.Command("systemctl", "is-active", s).Output()
-			statusStr := string(out)
-			if !strings.Contains(statusStr, "active") {
-				allUp = false
+			statusStr := strings.TrimSpace(string(out))
+			if statusStr == "active" {
+				activeCount++
 			}
 			if !simple {
-				systemdStatus.WriteString(fmt.Sprintf("  - %s: %s", s, statusStr))
+				systemdStatus.WriteString(fmt.Sprintf("  - %s: %s\n", s, statusStr))
 			}
 		}
 
@@ -49,21 +49,24 @@ var statusCmd = &cobra.Command{
 		brewOut, err := brewCmd.Output()
 		mailpitActive := err == nil && strings.Contains(string(brewOut), "mailpit") && strings.Contains(string(brewOut), "started")
 
-		if !mailpitActive {
-			allUp = false
+		if mailpitActive {
+			activeCount++
 		}
 
-		// Conditional Output
+		// Handle Simple Output
 		if simple {
-			if allUp {
+			switch {
+			case activeCount == totalServices:
 				fmt.Println("up")
-			} else {
+			case activeCount > 0:
+				fmt.Println("partial")
+			default:
 				fmt.Println("down")
 			}
 			return
 		}
 
-		// Standard Detailed Output
+		// Handle Detailed Output
 		fmt.Println("Systemd Services:")
 		fmt.Print(systemdStatus.String())
 		fmt.Println("Brew Services:")

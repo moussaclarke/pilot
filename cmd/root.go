@@ -8,7 +8,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "pilot",
 	Short:   "Pilot is a local development environment manager",
-	Version: "0.2.0",
+	Version: "0.3.0",
 }
 
 func Execute() {
