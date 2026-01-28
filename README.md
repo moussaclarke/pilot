@@ -81,6 +81,14 @@ Removes the `.pilot` configuration, cleans the hosts file entry, removes the Cad
 pilot rm
 ```
 
+### List Sites
+
+```bash
+pilot list
+```
+
+Displays the sites currently managed by Pilot, as well as any other sites found in the global Caddyfile.
+
 ### Global Service Control
 
 | Command | Description |
