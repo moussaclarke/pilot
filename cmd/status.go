@@ -15,7 +15,7 @@ func init() {
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Check service status",
-	Long:  "Check the active status of the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense and mailpit",
+	Long:  "Check the active status of the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Systemd Services:")
 		for _, s := range systemdServices {

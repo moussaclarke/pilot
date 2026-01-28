@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var systemdServices = []string{"frankenphp", "mysql", "postgresql", "typesense-server"}
+var systemdServices = []string{"frankenphp", "mysql", "postgresql", "typesense-server", "garage"}
 
 func init() {
 	rootCmd.AddCommand(upCmd)
@@ -17,7 +17,7 @@ func init() {
 var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Start all development services",
-	Long:  "Start the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense and mailpit",
+	Long:  "Start the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
 	Run: func(cmd *cobra.Command, args []string) {
 		manageServices("start")
 	},
@@ -26,7 +26,7 @@ var upCmd = &cobra.Command{
 var downCmd = &cobra.Command{
 	Use:   "down",
 	Short: "Stop all development services",
-	Long:  "Stop the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense and mailpit",
+	Long:  "Stop the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
 	Run: func(cmd *cobra.Command, args []string) {
 		manageServices("stop")
 	},

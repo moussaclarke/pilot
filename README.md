@@ -18,6 +18,7 @@ Pilot expects the following services to be present and named exactly as shown:
 | **postgresql** | `apt` | `systemctl` |
 | **typesense-server** | `deb` / `apt` | `systemctl` |
 | **mailpit** | `homebrew` | `brew services` |
+| **garage** | `homebrew` | `systemctl` (manual service unit) |
 
 ---
 
@@ -43,6 +44,7 @@ Pilot expects the following services to be present and named exactly as shown:
 * **typesense** (installed via deb/apt)
 * **frankenphp** (manually installed via d/l and with an appropriate service unit)
 * **mailpit** (installed via homebrew)
+* **garage** (installed via homebrew but with a manual service unit)
 
 ### Build and install
 
