@@ -114,6 +114,7 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 - [ ] Prettier output
 - [ ] Automated Prerequisite check including installation or installation instructions
 - [ ] Check service status before up/down
+- [x] Site list command
 - [ ] Site info command
 - [ ] Better error handling
 - [ ] Tests
