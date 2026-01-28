@@ -51,6 +51,12 @@ go build -o pilot main.go
 sudo mv pilot /usr/local/bin/
 ```
 
+or
+
+```bash
+./install.sh
+```
+
 ---
 
 ## Usage
