@@ -76,29 +76,36 @@ func getManagedSites() ([]SiteInfo, error) {
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if strings.HasPrefix(line, "import ") {
-			// Extract path: import /home/user/project/.pilot/Caddyfile
 			configPath := strings.TrimSpace(strings.Replace(line, "import ", "", 1))
-			projectRoot := filepath.Dir(filepath.Dir(configPath))
-			pilotDir := filepath.Join(projectRoot, ".pilot")
+			
+			var projectRoot string
+			var pilotExists bool
+			
+			// Detect if this is a Pilot-managed site or a standard Caddyfile import
+			if strings.Contains(configPath, "/.pilot/Caddyfile") {
+				projectRoot = filepath.Dir(filepath.Dir(configPath))
+				pilotExists = true
+			} else {
+				projectRoot = filepath.Dir(configPath)
+				pilotExists = false
+			}
 
-			// Check if .pilot directory exists
-			_, pilotErr := os.Stat(pilotDir)
-			pilotExists := pilotErr == nil
-
-			// Extract domain from local config
 			domain := getDomainFromLocalCaddy(configPath)
-
-			// Check for certs and Caddyfile specifically if pilot exists
+			
 			certStatus := false
 			caddyStatus := false
-			if pilotExists {
-				certPath := filepath.Join(pilotDir, domain+".crt")
-				_, certErr := os.Stat(certPath)
-				certStatus = certErr == nil
 
-				caddyPath := filepath.Join(pilotDir, "Caddyfile")
-				_, caddyErr := os.Stat(caddyPath)
-				caddyStatus = caddyErr == nil
+			// Check filesystem for actual presence of files
+			if _, err := os.Stat(configPath); err == nil {
+				caddyStatus = true
+			}
+
+			if pilotExists {
+				pilotDir := filepath.Join(projectRoot, ".pilot")
+				certPath := filepath.Join(pilotDir, domain+".crt")
+				if _, err := os.Stat(certPath); err == nil {
+					certStatus = true
+				}
 			}
 
 			sites = append(sites, SiteInfo{
