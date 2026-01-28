@@ -3,4 +3,11 @@
 go build -o pilot main.go
 sudo mv pilot /usr/local/bin
 
-echo "Successfully installed to /usr/local/bin/pilot"
+COMPLETION_DEST="/usr/local/share/bash-completion/completions"
+sudo mkdir -p "$COMPLETION_DEST"
+
+/usr/local/bin/pilot completion bash | sudo tee "$COMPLETION_DEST/pilot" > /dev/null
+
+sudo chmod 644 "$COMPLETION_DEST/pilot"
+
+echo "Successfully installed pilot and completions."
