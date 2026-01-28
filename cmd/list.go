@@ -14,6 +14,7 @@ type SiteInfo struct {
 	Domain      string
 	Path        string
 	PilotExists bool
+	CaddyExists bool
 	Certs       bool
 }
 
@@ -24,6 +25,7 @@ func init() {
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all managed sites",
+	Long:  "List all sites currently found as imports in /etc/frankenphp/Caddyfile. If a pilot directory is present, also whether certs and Caddyfile exist.",
 	Run: func(cmd *cobra.Command, args []string) {
 		sites, err := getManagedSites()
 		if err != nil {
@@ -36,20 +38,28 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Printf("%-25s %-10s %-10s %-30s\n", "DOMAIN", "PILOT", "CERTS", "PATH")
+		fmt.Printf("%-35s %-10s %-10s %-10s %-30s\n", "DOMAIN", "PILOT", "CADDY", "CERTS", "PATH")
 		fmt.Println(strings.Repeat("-", 85))
 		for _, site := range sites {
 			pilotStatus := "Yes"
 			certStatus := "OK"
+			caddyStatus := "OK"
 
 			if !site.PilotExists {
 				pilotStatus = "No"
 				certStatus = "?"
-			} else if !site.Certs {
-				certStatus = "MISSING"
+				caddyStatus = "?"
+			} else if !site.CaddyExists || !site.Certs {
+				if !site.CaddyExists {
+					caddyStatus = "MISSING"
+				}
+
+				if !site.Certs {
+					certStatus = "MISSING"
+				}
 			}
 
-			fmt.Printf("%-25s %-10s %-10s %-30s\n", site.Domain, pilotStatus, certStatus, site.Path)
+			fmt.Printf("%-35s %-10s %-10s %-10s %-30s\n", site.Domain, pilotStatus, caddyStatus, certStatus, site.Path)
 		}
 	},
 }
@@ -78,18 +88,24 @@ func getManagedSites() ([]SiteInfo, error) {
 			// Extract domain from local config
 			domain := getDomainFromLocalCaddy(configPath)
 
-			// Check for certs specifically if pilot exists
+			// Check for certs and Caddyfile specifically if pilot exists
 			certStatus := false
+			caddyStatus := false
 			if pilotExists {
 				certPath := filepath.Join(pilotDir, domain+".crt")
 				_, certErr := os.Stat(certPath)
 				certStatus = certErr == nil
+
+				caddyPath := filepath.Join(pilotDir, "Caddyfile")
+				_, caddyErr := os.Stat(caddyPath)
+				caddyStatus = caddyErr == nil
 			}
 
 			sites = append(sites, SiteInfo{
 				Domain:      domain,
 				Path:        projectRoot,
 				PilotExists: pilotExists,
+				CaddyExists: caddyStatus,
 				Certs:       certStatus,
 			})
 		}
@@ -115,4 +131,3 @@ func getDomainFromLocalCaddy(path string) string {
 	}
 	return "unknown"
 }
-
