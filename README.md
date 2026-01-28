@@ -88,6 +88,7 @@ pilot rm
 | `pilot up` | Starts all managed services. |
 | `pilot down` | Stops all managed services. |
 | `pilot status` | Displays the current running status of the stack. |
+| `pilot status --simple` | Displays the current running status of the stack in a more compact format for scripting. |
 
 ---
 
