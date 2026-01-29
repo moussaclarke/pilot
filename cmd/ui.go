@@ -18,6 +18,7 @@ var (
 	styleHeading = lipgloss.NewStyle().Foreground(highlight).Bold(true)
 	styleSuccess = lipgloss.NewStyle().Foreground(special)
 	styleWarning = lipgloss.NewStyle().Foreground(warning)
+	styleDanger  = lipgloss.NewStyle().Foreground(danger)
 	styleDim     = lipgloss.NewStyle().Foreground(subtle)
 
 	// Layout Styles
@@ -41,7 +42,7 @@ func PrintWarning(msg string) {
 }
 
 func PrintError(msg string) {
-	prefix := styleWarning.Bold(true).Render("!")
+	prefix := styleDanger.Bold(true).Render("!")
 	fmt.Printf("%s %s\n", prefix, styleWarning.Render(msg))
 }
 
