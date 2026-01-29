@@ -59,6 +59,7 @@ var initCmd = &cobra.Command{
 		// Create certs
 		os.Mkdir(".pilot", 0755)
 		exec.Command("mkcert", "-cert-file", ".pilot/"+domain+".crt", "-key-file", ".pilot/"+domain+".key", domain).Run()
+		PrintInfo("Created certs")
 
 		// Create Caddyfile
 		caddyContent := fmt.Sprintf("%s {\n  root * %s/public #change this to wherever your entry point is\n  php_server\n  tls %s/.pilot/%s.crt %s/.pilot/%s.key\n}",
@@ -77,6 +78,7 @@ var initCmd = &cobra.Command{
 		exec.Command("sudo", "systemctl", "restart", "frankenphp").Run()
 		PrintInfo("Restarted frankenphp")
 		PrintSuccess(fmt.Sprintf("Done! You can access your site at https://%s", domain))
+		PrintDim("Your certs and Caddyfile are stored in the .pilot folder")
 		PrintDim("If you need to change the entry point, you'll need to change the 'root' directive in the Caddyfile")
 		PrintDim("Remember to restart frankenphp after making changes to the Caddyfile")
 	},
