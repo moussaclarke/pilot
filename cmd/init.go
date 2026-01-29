@@ -25,27 +25,27 @@ var initCmd = &cobra.Command{
 
 		// Validate public folder
 		if _, err := os.Stat(filepath.Join(pwd, "public")); os.IsNotExist(err) {
-			fmt.Print("The current directory does not contain a public folder. Continue? (y/n): ")
+			PrintWarning("The current directory does not contain a public folder. Continue? (y/n): ")
 			var answer string
 			fmt.Scanln(&answer)
 			if strings.ToLower(answer) != "y" {
 				return
 			}
-			fmt.Println("Ok, continuing. We'll set the entry point as 'public' but you'll need to change that manually if that's not what you want.")
+			PrintInfo("Ok, continuing. We'll set the entry point as 'public' but you'll need to change that manually if that's not what you want.")
 		}
 
 		// Check /etc/hosts
 		hostsContent, _ := os.ReadFile("/etc/hosts")
 		if strings.Contains(string(hostsContent), domain) {
-			fmt.Printf("Domain %s already exists in /etc/hosts\n", domain)
-			fmt.Println("Please remove it manually and try again.")
+			PrintError(fmt.Sprintf("Domain %s already exists in /etc/hosts", domain))
+			PrintDim("Please remove it manually and try again.")
 			return
 		}
 
 		// Check .pilot folder
 		if _, err := os.Stat(".pilot"); !os.IsNotExist(err) {
-			fmt.Println(".pilot folder already exists.")
-			fmt.Println("Please remove it manually and try again.")
+			PrintError(".pilot folder already exists.")
+			PrintDim("Please remove it manually and try again.")
 			return
 		}
 
@@ -55,7 +55,7 @@ var initCmd = &cobra.Command{
 		f.WriteString(hostEntry)
 		f.Close()
 		exec.Command("bash", "-c", "cat /tmp/hosts_append | sudo tee -a /etc/hosts").Run()
-		fmt.Printf("Added %s to /etc/hosts\n", domain)
+		PrintInfo(fmt.Sprintf("Added %s to /etc/hosts", domain))
 		// Create certs
 		os.Mkdir(".pilot", 0755)
 		exec.Command("mkcert", "-cert-file", ".pilot/"+domain+".crt", "-key-file", ".pilot/"+domain+".key", domain).Run()
@@ -64,7 +64,7 @@ var initCmd = &cobra.Command{
 		caddyContent := fmt.Sprintf("%s {\n  root * %s/public #change this to wherever your entry point is\n  php_server\n  tls %s/.pilot/%s.crt %s/.pilot/%s.key\n}",
 			domain, pwd, pwd, domain, pwd, domain)
 		os.WriteFile(".pilot/Caddyfile", []byte(caddyContent), 0644)
-		fmt.Println("Created Caddyfile")
+		PrintInfo("Created Caddyfile")
 
 		// Update global Caddyfile
 		importLine := fmt.Sprintf("\nimport %s/.pilot/Caddyfile", pwd)
@@ -72,12 +72,12 @@ var initCmd = &cobra.Command{
 		f2.WriteString(importLine)
 		f2.Close()
 		exec.Command("bash", "-c", "cat /tmp/caddy_append | sudo tee -a /etc/frankenphp/Caddyfile").Run()
-		fmt.Printf("Imported %s/.pilot/Caddyfile into /etc/frankenphp/Caddyfile\n", pwd)
+		PrintInfo(fmt.Sprintf("Imported %s/.pilot/Caddyfile into /etc/frankenphp/Caddyfile", pwd))
 
 		exec.Command("sudo", "systemctl", "restart", "frankenphp").Run()
-		fmt.Println("Restarted frankenphp")
-		fmt.Printf("Done! You can access your site at https://%s\n", domain)
-		fmt.Println("If you need to change the entry point, you'll need to change the 'root' directive in the Caddyfile")
-		fmt.Println("Remember to restart frankenphp after making changes to the Caddyfile")
+		PrintInfo("Restarted frankenphp")
+		PrintSuccess(fmt.Sprintf("Done! You can access your site at https://%s", domain))
+		PrintDim("If you need to change the entry point, you'll need to change the 'root' directive in the Caddyfile")
+		PrintDim("Remember to restart frankenphp after making changes to the Caddyfile")
 	},
 }

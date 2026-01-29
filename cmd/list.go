@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 	"github.com/spf13/cobra"
 )
 
@@ -29,17 +31,30 @@ var listCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		sites, err := getManagedSites()
 		if err != nil {
-			fmt.Printf("Error reading configuration: %v\n", err)
+			PrintError(fmt.Sprintf("Error reading configuration: %v", err))
 			return
 		}
 
 		if len(sites) == 0 {
-			fmt.Println("No sites currently managed by Pilot.")
+			PrintInfo("No sites currently managed by Pilot.")
 			return
 		}
 
-		fmt.Printf("%-35s %-10s %-10s %-10s %-30s\n", "DOMAIN", "PILOT", "CADDY", "CERTS", "PATH")
-		fmt.Println(strings.Repeat("-", 85))
+		re := lipgloss.NewRenderer(os.Stdout)
+		headerStyle := re.NewStyle().Foreground(highlight).Bold(true).Align(lipgloss.Center)
+		borderStyle := re.NewStyle().Foreground(subtle)
+
+		t := table.New().
+			Border(lipgloss.NormalBorder()).
+			BorderStyle(borderStyle).
+			StyleFunc(func(row, col int) lipgloss.Style {
+				if row == table.HeaderRow {
+					return headerStyle
+				}
+				return lipgloss.NewStyle().Padding(0, 1)
+			}).
+			Headers("DOMAIN", "PILOT", "CADDY", "CERTS", "PATH")
+
 		for _, site := range sites {
 			pilotStatus := "Yes"
 			certStatus := "OK"
@@ -49,18 +64,24 @@ var listCmd = &cobra.Command{
 				pilotStatus = "No"
 				certStatus = "?"
 				caddyStatus = "?"
-			} else if !site.CaddyExists || !site.Certs {
+			} else {
 				if !site.CaddyExists {
 					caddyStatus = "MISSING"
 				}
-
 				if !site.Certs {
 					certStatus = "MISSING"
 				}
 			}
 
-			fmt.Printf("%-35s %-10s %-10s %-10s %-30s\n", site.Domain, pilotStatus, caddyStatus, certStatus, site.Path)
+			t.Row(
+				site.Domain,
+				pilotStatus,
+				caddyStatus,
+				certStatus,
+				site.Path,
+			)
 		}
+		fmt.Println(t.Render())
 	},
 }
 
@@ -77,10 +98,10 @@ func getManagedSites() ([]SiteInfo, error) {
 		line := strings.TrimSpace(scanner.Text())
 		if strings.HasPrefix(line, "import ") {
 			configPath := strings.TrimSpace(strings.Replace(line, "import ", "", 1))
-			
+
 			var projectRoot string
 			var pilotExists bool
-			
+
 			// Detect if this is a Pilot-managed site or a standard Caddyfile import
 			if strings.Contains(configPath, "/.pilot/Caddyfile") {
 				projectRoot = filepath.Dir(filepath.Dir(configPath))
@@ -91,7 +112,7 @@ func getManagedSites() ([]SiteInfo, error) {
 			}
 
 			domain := getDomainFromLocalCaddy(configPath)
-			
+
 			certStatus := false
 			caddyStatus := false
 

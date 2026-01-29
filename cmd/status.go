@@ -29,11 +29,13 @@ var statusCmd = &cobra.Command{
 		for _, s := range systemdServices {
 			out, _ := exec.Command("systemctl", "is-active", s).Output()
 			statusStr := strings.TrimSpace(string(out))
+			statusCol := styleDim
 			if statusStr == "active" {
 				activeCount++
+				statusCol = styleSuccess
 			}
 			if !simple {
-				systemdStatus.WriteString(fmt.Sprintf("  - %s: %s\n", s, statusStr))
+				systemdStatus.WriteString(fmt.Sprintf("  - %s: %s\n", styleTableCell.Width(20).Render(s), statusCol.Render(statusStr)))
 			}
 		}
 
@@ -57,26 +59,25 @@ var statusCmd = &cobra.Command{
 		if simple {
 			switch {
 			case activeCount == totalServices:
-				fmt.Println("up")
+				fmt.Println(styleSuccess.Render("up"))
 			case activeCount > 0:
-				fmt.Println("partial")
+				fmt.Println(styleWarning.Render("partial"))
 			default:
-				fmt.Println("down")
+				fmt.Println(styleDim.Render("down"))
 			}
 			return
 		}
-
 		// Handle Detailed Output
-		fmt.Println("Systemd Services:")
+		fmt.Println(styleHeading.Render("Systemd Services"))
 		fmt.Print(systemdStatus.String())
-		fmt.Println("Brew Services:")
+
+		fmt.Println(styleHeading.Render("Brew Services"))
 		if err != nil {
-			fmt.Println("  - mailpit: error checking status")
+			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleWarning.Render("error checking status"))
 		} else if mailpitActive {
-			fmt.Println("  - mailpit: active")
+			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleSuccess.Render("active"))
 		} else {
-			fmt.Println("  - mailpit: inactive")
+			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleDim.Render("inactive"))
 		}
 	},
 }
-

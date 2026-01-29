@@ -19,7 +19,7 @@ var rmCmd = &cobra.Command{
 	Long:  "Remove the configuration for a site.\nRun this command from the project root. It removes the .pilot directory, cleans /etc/hosts and /etc/frankenphp/Caddyfile, and restarts frankenphp.",
 	Run: func(cmd *cobra.Command, args []string) {
 		if _, err := os.Stat(".pilot"); os.IsNotExist(err) {
-			fmt.Println("No .pilot directory found.")
+			PrintWarning("No .pilot directory found.")
 			return
 		}
 
@@ -33,11 +33,11 @@ var rmCmd = &cobra.Command{
 		}
 
 		if domain == "" {
-			fmt.Println("Could not determine domain.")
+			PrintError("Could not determine domain.")
 			return
 		}
 
-		fmt.Printf("Remove configuration for %s? (y/n): ", domain)
+		PrintWarning(fmt.Sprintf("Remove configuration for %s? (y/n): ", domain))
 		var answer string
 		fmt.Scanln(&answer)
 		if strings.ToLower(answer) != "y" {
@@ -48,17 +48,17 @@ var rmCmd = &cobra.Command{
 
 		// Remove from hosts
 		exec.Command("sudo", "sed", "-i", fmt.Sprintf("/127.0.0.1 %s/d", domain), "/etc/hosts").Run()
-		fmt.Printf("%s removed from /etc/hosts.\n", domain)
+		PrintInfo(fmt.Sprintf("%s removed from /etc/hosts.", domain))
 
 		// Remove from Caddyfile
 		importLine := fmt.Sprintf("import %s/.pilot/Caddyfile", pwd)
 		escapedLine := strings.ReplaceAll(importLine, "/", "\\/")
 		exec.Command("sudo", "sed", "-i", fmt.Sprintf("/%s/d", escapedLine), "/etc/frankenphp/Caddyfile").Run()
-		fmt.Printf("%s/.pilot/Caddyfile removed from /etc/frankenphp/Caddyfile.\n", pwd)
+		PrintInfo(fmt.Sprintf("%s/.pilot/Caddyfile removed from /etc/frankenphp/Caddyfile.", pwd))
 		os.RemoveAll(".pilot")
-		fmt.Println(".pilot directory removed.")
+		PrintInfo(".pilot directory removed.")
 		exec.Command("sudo", "systemctl", "restart", "frankenphp").Run()
-		fmt.Println("frankenphp restarted.")
-		fmt.Printf("Done! %s has been removed.\n", domain)
+		PrintInfo("frankenphp restarted.")
+		PrintSuccess(fmt.Sprintf("Done! %s has been removed.", domain))
 	},
 }

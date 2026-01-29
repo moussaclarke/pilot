@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"os"
 	"os/exec"
 
@@ -37,11 +39,11 @@ var downCmd = &cobra.Command{
 
 func manageServices(action string) {
 	for _, service := range systemdServices {
-		fmt.Printf("%s %s...\n", action, service)
+		PrintInfo(fmt.Sprintf("%s %s...", cases.Title(language.English).String(service), action))
 		runServiceCommand("sudo", "systemctl", action, service)
 	}
 
-	fmt.Printf("%s mailpit...\n", action)
+	PrintInfo(fmt.Sprintf("Mailpit %s...", action))
 	runServiceCommand("brew", "services", action, "mailpit")
 }
 
@@ -66,6 +68,6 @@ func runServiceCommand(name string, arg ...string) {
 	cmd.Env = os.Environ()
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Failed to execute %s: %v\n", name, err)
+		PrintError(fmt.Sprintf("Failed to execute %s: %v", name, err))
 	}
 }
