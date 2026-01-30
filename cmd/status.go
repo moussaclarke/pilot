@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -16,6 +17,27 @@ func init() {
 	statusCmd.Flags().BoolVarP(&simple, "simple", "s", false, "Return only 'up', 'down', or 'partial' instead of list")
 }
 
+func CheckSystemdServiceStatus(service string) bool {
+	out, _ := exec.Command("systemctl", "is-active", service).Output()
+	return strings.TrimSpace(string(out)) == "active"
+}
+
+func CheckBrewServiceStatus(service string) bool {
+	var brewCmd *exec.Cmd
+	sudoUser := os.Getenv("SUDO_USER")
+	if sudoUser != "" {
+		brewCmd = exec.Command("sudo", "-u", sudoUser, brewPath, "services", "info", service, "--json")
+	} else {
+		brewCmd = exec.Command(brewPath, "services", "info", service, "--json")
+	}
+	out, _ := brewCmd.Output()
+	// unmarshal json output to check if service is active - take the first object in the array, and check for running : true
+	var result []map[string]any
+	json.Unmarshal(out, &result)
+
+	return result[0]["running"].(bool)
+}
+
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Check service status",
@@ -27,10 +49,11 @@ var statusCmd = &cobra.Command{
 		// Check Systemd Services
 		var systemdStatus strings.Builder
 		for _, s := range systemdServices {
-			out, _ := exec.Command("systemctl", "is-active", s).Output()
-			statusStr := strings.TrimSpace(string(out))
 			statusCol := styleDim
-			if statusStr == "active" {
+			statusCheck := CheckSystemdServiceStatus(s)
+			statusStr := "inactive"
+			if statusCheck {
+				statusStr = "active"
 				activeCount++
 				statusCol = styleSuccess
 			}
@@ -40,16 +63,7 @@ var statusCmd = &cobra.Command{
 		}
 
 		// Check Brew Services
-		var brewCmd *exec.Cmd
-		sudoUser := os.Getenv("SUDO_USER")
-		if sudoUser != "" {
-			brewCmd = exec.Command("sudo", "-u", sudoUser, brewPath, "services", "list")
-		} else {
-			brewCmd = exec.Command(brewPath, "services", "list")
-		}
-
-		brewOut, err := brewCmd.Output()
-		mailpitActive := err == nil && strings.Contains(string(brewOut), "mailpit") && strings.Contains(string(brewOut), "started")
+		mailpitActive := CheckBrewServiceStatus("mailpit")
 
 		if mailpitActive {
 			activeCount++
@@ -72,9 +86,7 @@ var statusCmd = &cobra.Command{
 		fmt.Print(systemdStatus.String())
 
 		fmt.Println(styleHeading.Render("Brew Services"))
-		if err != nil {
-			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleWarning.Render("error checking status"))
-		} else if mailpitActive {
+		if mailpitActive {
 			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleSuccess.Render("active"))
 		} else {
 			fmt.Printf("  - %s: %s\n", styleTableCell.Width(20).Render("mailpit"), styleDim.Render("inactive"))

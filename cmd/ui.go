@@ -7,7 +7,7 @@ import (
 
 var (
 	// Colours
-	subtle    = lipgloss.AdaptiveColor{Light: "#383838", Dark: "#D9D9D9"}
+	subtle    = lipgloss.AdaptiveColor{Light: "#383838", Dark: "#A9A9A9"}
 	highlight = lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
 	special   = lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
 	warning   = lipgloss.AdaptiveColor{Light: "#FFA500", Dark: "#FFA500"}
