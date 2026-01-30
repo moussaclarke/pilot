@@ -9,7 +9,7 @@ import (
 var diagnoseCmd = &cobra.Command{
 	Use:   "diagnose",
 	Short: "Check system prerequisites",
-	Long:  "Check whether all system requirements are met.",
+	Long:  "Check for any missing system dependencies that Pilot requires and suggest how to resolve them.",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(styleTitle.Render("Pilot System Diagnosis"))
 

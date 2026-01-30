@@ -98,6 +98,14 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 | `pilot status` | Displays the current running status of the stack. |
 | `pilot status --simple` | Displays the current running status of the stack in a more compact format for scripting. |
 
+### Prerequisite Checks
+
+```bash
+pilot diagnose
+```
+
+Checks for any missing system dependencies and suggests how to resolve them. Preflight checks are also run for most commands.
+
 ---
 
 ## Technical Details
@@ -151,7 +159,10 @@ Although optimised for PHP, Pilot can manage any project. By editing the generat
 ## TODO
 
 - [x] Prettier output
-- [ ] Automated Prerequisite check including installation or installation instructions
+- [x] Automated Prerequisite check including installation or installation instructions
+- [x] Site init command
+- [x] Site rm command
+- [ ] Extend prerequisite checks to also check for global conf files /etc/hosts and /etc/frankenphp/Caddyfile
 - [ ] Check service status before up/down
 - [x] Site list command
 - [ ] Site info command
