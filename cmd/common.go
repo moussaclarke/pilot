@@ -2,12 +2,60 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 )
 
 const brewPath = "/home/linuxbrew/.linuxbrew/bin/brew"
+
+type CheckType int
+
+const (
+	Binary CheckType = iota
+	SystemdUnit
+	BrewFormula
+)
+
+type Requirement struct {
+	Name       string
+	Type       CheckType
+	Identifier string
+	Remedy     string
+}
+
+var requirements = []Requirement{
+	{Name: "Homebrew", Type: Binary, Identifier: "brew", Remedy: fmt.Sprintf("Ensure Homebrew is installed and accessible at %s", brewPath)},
+	{Name: "FrankenPHP", Type: SystemdUnit, Identifier: "frankenphp", Remedy: "Install binary and ensure /etc/systemd/system/frankenphp.service exists"},
+	{Name: "MySQL", Type: SystemdUnit, Identifier: "mysql", Remedy: "Install via 'sudo apt install mysql' and ensure /etc/systemd/system/mysql.service exists"},
+	{Name: "PostgreSQL", Type: SystemdUnit, Identifier: "postgresql", Remedy: "Install via 'sudo apt install postgresql' and ensure /etc/systemd/system/postgresql.service exists"},
+	{Name: "Typesense", Type: SystemdUnit, Identifier: "typesense-server", Remedy: "Visit https://typesense.org and install via apt/deb and ensure /etc/systemd/system/typesense-server.service exists"},
+	{Name: "Garage", Type: SystemdUnit, Identifier: "garage", Remedy: "Ensure manual systemd unit is configured for Garage binary at /etc/systemd/system/garage.service"},
+	{Name: "Mailpit", Type: BrewFormula, Identifier: "mailpit", Remedy: "Ensure Homebrew is available and install via 'brew install mailpit'"},
+	{Name: "mkcert", Type: Binary, Identifier: "mkcert", Remedy: "Install via 'sudo apt install mkcert' and run 'mkcert -install'"},
+}
+
+func checkRequirement(req Requirement) bool {
+	switch req.Type {
+	case Binary:
+		// for brew check the hard coded path
+		if req.Identifier == "brew" {
+			_, err := os.Stat(brewPath)
+			return err == nil
+		}
+		_, err := exec.LookPath(req.Identifier)
+		return err == nil
+	case SystemdUnit:
+		out, _ := runServiceCommand("systemctl", "list-unit-files", req.Identifier+".service")
+		return strings.Contains(string(out), "enabled")
+	case BrewFormula:
+		out, _ := runServiceCommand("brew", "list")
+		return strings.Contains(string(out), req.Identifier)
+	default:
+		return false
+	}
+}
 
 func runServiceCommand(name string, arg ...string) ([]byte, error) {
 	finalName := name
