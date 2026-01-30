@@ -26,6 +26,7 @@ type Requirement struct {
 }
 
 var requirements = []Requirement{
+	{Name: "Systemd", Type: Binary, Identifier: "systemctl", Remedy: "Your machine needs to be running systemd"},
 	{Name: "Homebrew", Type: Binary, Identifier: "brew", Remedy: fmt.Sprintf("Ensure Homebrew is installed and accessible at %s", brewPath)},
 	{Name: "FrankenPHP", Type: SystemdUnit, Identifier: "frankenphp", Remedy: "Install binary and ensure /etc/systemd/system/frankenphp.service exists"},
 	{Name: "MySQL", Type: SystemdUnit, Identifier: "mysql", Remedy: "Install via 'sudo apt install mysql' and ensure /etc/systemd/system/mysql.service exists"},
@@ -55,6 +56,31 @@ func checkRequirement(req Requirement) bool {
 	default:
 		return false
 	}
+}
+
+func checkPreflight(reqs []string) bool {
+	res := true
+	for _, id := range reqs {
+		req := Requirement{}
+		for _, r := range requirements {
+			if r.Identifier == id {
+				req = r
+				break
+			}
+		}
+		// if req empty, it's not a valid requirement
+		if req.Identifier == "" {
+			PrintError(fmt.Sprintf("Unknown requirement: %s", id))
+			return false
+		}
+		if !checkRequirement(req) {
+			res = false
+			PrintError(fmt.Sprintf("Missing requirement: %s", req.Name))
+			PrintDim(req.Remedy)
+		}
+	}
+
+	return res
 }
 
 func runServiceCommand(name string, arg ...string) ([]byte, error) {

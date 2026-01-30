@@ -19,6 +19,10 @@ var statusCmd = &cobra.Command{
 	Short: "Check service status",
 	Long:  "Check the active status of the currently managed development services.",
 	Run: func(cmd *cobra.Command, args []string) {
+		reqs := []string{"brew", "systemctl"}
+		if !checkPreflight(reqs) {
+			return
+		}
 		activeCount := 0
 		totalServices := len(systemdServices) + 1 // +1 for mailpit
 

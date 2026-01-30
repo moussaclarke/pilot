@@ -20,6 +20,10 @@ var initCmd = &cobra.Command{
 	Long:  "Initialise a new site configuration.\nRun this command from your project root. It creates a .pilot directory, updates /etc/hosts, creates certs, creates a Caddyfile and imports it into the global Caddyfile. Finally it restarts the frankenphp server.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		reqs := []string{"mkcert", "systemctl", "frankenphp"}
+		if !checkPreflight(reqs) {
+			return
+		}
 		domain := args[0]
 		pwd, _ := os.Getwd()
 
@@ -29,6 +33,7 @@ var initCmd = &cobra.Command{
 			var answer string
 			fmt.Scanln(&answer)
 			if strings.ToLower(answer) != "y" {
+				PrintInfo("Ok, aborting.")
 				return
 			}
 			PrintInfo("Ok, continuing. We'll set the entry point as 'public' but you'll need to change that manually if that's not what you want.")
