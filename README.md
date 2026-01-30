@@ -1,6 +1,6 @@
 # Pilot
 
-Pilot is a command-line tool written in Go designed to manage local development environments. It serves as a very lightweight alternative to Laravel Valet, orchestrating the specific stack required on my Ubuntu machine.
+Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a seamless local environment similar to Laravel Valet, but tailored specifically for Linux systemd and Homebrew services.
 
 > [!IMPORTANT]
 > **Warning:** This tool is highly opinionated and strictly coupled to my specific local machine configuration. It assumes exact naming conventions for services and specific installation methods.
@@ -102,6 +102,45 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 
 ## Technical Details
 
+### Core Architecture
+
+Pilot transforms your local machine into a development server by managing three primary layers:
+
+1. **Domain Resolution**: Maps custom `.test` domains to `127.0.0.1` via `/etc/hosts`.
+2. **Request Handling**: Uses **FrankenPHP** as a high-performance web server. It eliminates the need for PHP-FPM by processing PHP internally.
+3. **Automatic SSL**: Uses `mkcert` to generate locally trusted certificates for every site, ensuring a full HTTPS development experience.
+
+### Comparison to Laravel Valet
+
+While inspired by Valet, Pilot differs in several key areas:
+
+* **Web Server**: Uses **FrankenPHP** instead of Nginx + PHP-FPM.
+* **Service Manager**: Native **Systemd** integration for Linux instead of macOS `launchd`.
+* **DNS**: Explicitly manages `/etc/hosts` for transparency rather than running a background `dnsmasq` proxy.
+* **Configuration**: Stores site-specific settings and certs within a project-local `.pilot` folder instead of a global hidden directory.
+
+---
+
+### Project Conventions
+
+#### The `.pilot` Directory
+
+Upon running `pilot init`, a `.pilot` folder is created in your project root.
+
+> [!IMPORTANT]
+> You should add `/.pilot/` to your global or project-specific `.gitignore`.
+
+This directory contains:
+
+* **SSL Certificates**: Site-specific `.crt` and `.key` files.
+* **Caddyfile**: The local routing rules for the project.
+
+#### Non-PHP Projects
+
+Although optimised for PHP, Pilot can manage any project. By editing the generated `.pilot/Caddyfile`, you can use it as a **reverse proxy** for Node.js, Go, or Python applications, or as a **static file server** for frontend builds.
+
+---
+
 ### Configuration Paths
 
 * **Site Caddyfile**: `./.pilot/Caddyfile`
@@ -111,7 +150,7 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 
 ## TODO
 
-- [ ] Prettier output
+- [x] Prettier output
 - [ ] Automated Prerequisite check including installation or installation instructions
 - [ ] Check service status before up/down
 - [x] Site list command
@@ -119,7 +158,7 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 - [ ] Better error handling
 - [ ] Tests
 - [ ] Changelog
-- [ ] More documentation - including .pilot directory structure, overview of the stack
+- [x] More documentation - including .pilot directory structure, overview of the stack
 
 ## Non-goals
 
