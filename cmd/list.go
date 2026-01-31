@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -82,6 +83,7 @@ var listCmd = &cobra.Command{
 			)
 		}
 		fmt.Println(t.Render())
+		PrintInfo("Source Caddyfile: /etc/frankenphp/Caddyfile")
 	},
 }
 
@@ -111,51 +113,79 @@ func getManagedSites() ([]SiteInfo, error) {
 				pilotExists = false
 			}
 
-			domain := getDomainFromLocalCaddy(configPath)
+			domains := getDomainsFromLocalCaddy(configPath)
 
-			certStatus := false
-			caddyStatus := false
+			for _, domain := range domains {
 
-			// Check filesystem for actual presence of files
-			if _, err := os.Stat(configPath); err == nil {
-				caddyStatus = true
-			}
+				certStatus := false
+				caddyStatus := false
 
-			if pilotExists {
-				pilotDir := filepath.Join(projectRoot, ".pilot")
-				certPath := filepath.Join(pilotDir, domain+".crt")
-				if _, err := os.Stat(certPath); err == nil {
-					certStatus = true
+				// Check filesystem for actual presence of files
+				if _, err := os.Stat(configPath); err == nil {
+					caddyStatus = true
 				}
-			}
 
-			sites = append(sites, SiteInfo{
-				Domain:      domain,
-				Path:        projectRoot,
-				PilotExists: pilotExists,
-				CaddyExists: caddyStatus,
-				Certs:       certStatus,
-			})
+				if pilotExists {
+					pilotDir := filepath.Join(projectRoot, ".pilot")
+					certPath := filepath.Join(pilotDir, domain+".crt")
+					if _, err := os.Stat(certPath); err == nil {
+						certStatus = true
+					}
+				}
+
+				sites = append(sites, SiteInfo{
+					Domain:      domain,
+					Path:        projectRoot,
+					PilotExists: pilotExists,
+					CaddyExists: caddyStatus,
+					Certs:       certStatus,
+				})
+			}
 		}
 	}
 	return sites, scanner.Err()
 }
 
-func getDomainFromLocalCaddy(path string) string {
+func getDomainsFromLocalCaddy(path string) []string {
 	file, err := os.Open(path)
 	if err != nil {
-		return "unknown"
+		return []string{"unknown"}
 	}
 	defer file.Close()
 
+	var domains []string
 	scanner := bufio.NewScanner(file)
-	if scanner.Scan() {
+	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") || strings.HasPrefix(line, "{") || strings.HasPrefix(line, "}") {
+			continue
+		}
+
+		// Only process lines that appear to be site addresses (no indentation in original file)
+		// Note: For simplicity, we assume the site block starts at the beginning of the line
 		parts := strings.Fields(line)
 		if len(parts) > 0 {
-			// Remove trailing brace if present e.g. "domain.test {"
-			return strings.TrimSuffix(parts[0], "{")
+			// Check if the line ends a block or is a directive (very basic heuristic)
+			firstToken := strings.TrimSuffix(parts[0], "{")
+			if !isDirective(firstToken) {
+				// Split by comma for multiple domains on one line: "a.com, b.com {"
+				rawDomains := strings.SplitSeq(firstToken, ",")
+				for d := range rawDomains {
+					cleanD := strings.TrimSpace(d)
+					if cleanD != "" {
+						domains = append(domains, cleanD)
+					}
+				}
+			}
 		}
 	}
-	return "unknown"
+	if len(domains) == 0 {
+		return []string{"unknown"}
+	}
+	return domains
+}
+
+func isDirective(token string) bool {
+	directives := []string{"root", "php_fastcgi", "file_server", "reverse_proxy", "log", "tls", "import", "health_port", "health_uri", "php_server"}
+	return slices.Contains(directives, token)
 }
