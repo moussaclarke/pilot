@@ -7,21 +7,6 @@
 
 ---
 
-## Service Dependencies
-
-Pilot expects the following services to be present and named exactly as shown:
-
-| Service | Installation Method | Management |
-| --- | --- | --- |
-| **frankenphp** | Manual binary download from GitHub | `systemctl` (manual service unit) |
-| **mysql** | `apt` | `systemctl` |
-| **postgresql** | `apt` | `systemctl` |
-| **typesense-server** | `deb` / `apt` | `systemctl` |
-| **mailpit** | `homebrew` | `brew services` |
-| **garage** | `homebrew` | `systemctl` (manual service unit) |
-
----
-
 ## Features
 
 * **Service Management**: Start and stop the entire stack with single commands.
@@ -33,18 +18,39 @@ Pilot expects the following services to be present and named exactly as shown:
 
 ## Installation
 
+### Service Dependencies
+
+Pilot expects the following services to be present and named exactly as shown:
+
+| Service | Management |
+| --- | --- |
+| **frankenphp** | `systemd` |
+| **mysql** | `systemd` |
+| **postgresql** | `systemd` |
+| **typesense-server** | `systemd` |
+| **mailpit** | `homebrew` |
+| **garage** | `systemd` |
+
+The installation method isn't important except for mailpit, which **must** be installed via homebrew since pilot relies on `brew services` to manage it.
+
 ### Prerequisites
 
-* **Go** (to build this binary)
+* **Go** (to build this binary from source)
 * **mkcert**
 * **Homebrew**
 * **Systemd**
-* **mysql** (installed via apt)
-* **postgresql** (installed via apt)
-* **typesense** (installed via deb/apt)
-* **frankenphp** (manually installed via d/l and with an appropriate service unit)
+* **mysql**
+* **postgresql**
+* **typesense**
+* **frankenphp**
 * **mailpit** (installed via homebrew)
-* **garage** (installed via homebrew but with a manual service unit)
+* **garage**
+
+On my machine I have these installed as follows as at the time of writing:
+- homebrew: go, mailpit, garage (but with manual root service unit)
+- apt: mysql, postgresql, mkcert
+- deb/apt: typesense
+- manual install: frankenphp (but with manual root service unit)
 
 ### Build and install
 
@@ -114,7 +120,7 @@ Checks for any missing system dependencies and suggests how to resolve them. Pre
 
 Pilot transforms your local machine into a development server by managing three primary layers:
 
-1. **Domain Resolution**: Maps custom `.test` domains to `127.0.0.1` via `/etc/hosts`.
+1. **Domain Resolution**: Maps custom domains to `127.0.0.1` via `/etc/hosts`.
 2. **Request Handling**: Uses **FrankenPHP** as a web server and PHP runtime.
 3. **Automatic SSL**: Uses `mkcert` to generate locally trusted certificates for every site, ensuring a full HTTPS development experience.
 
@@ -145,7 +151,7 @@ This directory contains:
 
 #### Non-PHP Projects
 
-Although optimised for PHP, Pilot can manage any project. By editing the generated `.pilot/Caddyfile`, you can use it as a **reverse proxy** for Node.js, Go, or Python applications, or as a **static file server** for frontend builds.
+Although it defaults to PHP, Pilot can manage any project. By editing the generated `.pilot/Caddyfile`, you can use it as a **reverse proxy** for Node.js, Go or Python applications, or as a **static file server** for frontend builds.
 
 ---
 
@@ -171,7 +177,7 @@ Although optimised for PHP, Pilot can manage any project. By editing the generat
 - [ ] Changelog
 - [x] More documentation - including .pilot directory structure, overview of the stack
 
-## Non-goals
+## Current Non-goals
 
 - Other OSes or architectures. Or other people's machines in general.
 - Multi version support (e.g. there will be no `valet use` equivalent)
