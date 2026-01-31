@@ -11,7 +11,7 @@ var simple bool
 
 func init() {
 	rootCmd.AddCommand(statusCmd)
-	statusCmd.Flags().BoolVarP(&simple, "simple", "s", false, "Return only 'up', 'down', or 'partial' instead of list")
+	statusCmd.Flags().BoolVarP(&simple, "simple", "s", false, "Return only 'up', 'down', or 'partial' instead of a formatted list of services")
 }
 
 var statusCmd = &cobra.Command{

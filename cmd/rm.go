@@ -14,9 +14,10 @@ func init() {
 }
 
 var rmCmd = &cobra.Command{
-	Use:   "rm",
-	Short: "Remove site configuration",
-	Long:  "Remove the configuration for a site.\nRun this command from the project root. It removes the .pilot directory, cleans /etc/hosts and /etc/frankenphp/Caddyfile, and restarts frankenphp.",
+	Use:     "rm",
+	Aliases: []string{"remove", "delete", "del"},
+	Short:   "Remove site configuration",
+	Long:    "Remove the configuration for a site.\nRun this command from the project root. It removes the .pilot directory, cleans /etc/hosts and /etc/frankenphp/Caddyfile, and restarts frankenphp.",
 	Run: func(cmd *cobra.Command, args []string) {
 		reqs := []string{"frankenphp"}
 		if !checkPreflight(reqs) {

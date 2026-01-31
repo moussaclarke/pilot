@@ -16,9 +16,10 @@ func init() {
 }
 
 var upCmd = &cobra.Command{
-	Use:   "up",
-	Short: "Start all development services",
-	Long:  "Start the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
+	Use:     "up",
+	Aliases: []string{"start"},
+	Short:   "Start all development services",
+	Long:    "Start the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
 	Run: func(cmd *cobra.Command, args []string) {
 		reqs := []string{"brew", "frankenphp", "mysql", "postgresql", "typesense-server", "garage"}
 		if !checkPreflight(reqs) {
@@ -30,9 +31,10 @@ var upCmd = &cobra.Command{
 }
 
 var downCmd = &cobra.Command{
-	Use:   "down",
-	Short: "Stop all development services",
-	Long:  "Stop the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
+	Use:     "down",
+	Aliases: []string{"stop"},
+	Short:   "Stop all development services",
+	Long:    "Stop the currently managed development services.\nSpecifically frankenphp, mysql, postgresql, typesense, mailpit and garage",
 	Run: func(cmd *cobra.Command, args []string) {
 		reqs := []string{"brew", "systemctl", "frankenphp", "mysql", "postgresql", "typesense-server", "garage"}
 		if !checkPreflight(reqs) {

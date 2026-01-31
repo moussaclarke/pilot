@@ -26,9 +26,10 @@ func init() {
 }
 
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all managed sites",
-	Long:  fmt.Sprintf("List all sites currently found as imports in %s. If a pilot directory is present, also whether certs and Caddyfile exist.", globalCaddyPath),
+	Use:     "list",
+	Aliases: []string{"ls"},
+	Short:   "List all managed sites",
+	Long:    fmt.Sprintf("List all sites currently found as imports in %s. If a pilot directory is present, also whether certs and Caddyfile exist.", globalCaddyPath),
 	Run: func(cmd *cobra.Command, args []string) {
 		sites, err := getManagedSites()
 		if err != nil {
