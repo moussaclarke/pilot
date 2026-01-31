@@ -28,7 +28,7 @@ func init() {
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all managed sites",
-	Long:  "List all sites currently found as imports in /etc/frankenphp/Caddyfile. If a pilot directory is present, also whether certs and Caddyfile exist.",
+	Long:  fmt.Sprintf("List all sites currently found as imports in %s. If a pilot directory is present, also whether certs and Caddyfile exist.", globalCaddyPath),
 	Run: func(cmd *cobra.Command, args []string) {
 		sites, err := getManagedSites()
 		if err != nil {
@@ -83,12 +83,12 @@ var listCmd = &cobra.Command{
 			)
 		}
 		fmt.Println(t.Render())
-		PrintInfo("Source Caddyfile: /etc/frankenphp/Caddyfile")
+		PrintInfo(fmt.Sprintf("Global Caddyfile is located at %s", globalCaddyPath))
 	},
 }
 
 func getManagedSites() ([]SiteInfo, error) {
-	file, err := os.Open("/etc/frankenphp/Caddyfile")
+	file, err := os.Open(globalCaddyPath)
 	if err != nil {
 		return nil, err
 	}

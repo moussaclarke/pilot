@@ -57,8 +57,8 @@ var rmCmd = &cobra.Command{
 		// Remove from Caddyfile
 		importLine := fmt.Sprintf("import %s/.pilot/Caddyfile", pwd)
 		escapedLine := strings.ReplaceAll(importLine, "/", "\\/")
-		exec.Command("sudo", "sed", "-i", fmt.Sprintf("/%s/d", escapedLine), "/etc/frankenphp/Caddyfile").Run()
-		PrintInfo(fmt.Sprintf("%s/.pilot/Caddyfile removed from /etc/frankenphp/Caddyfile.", pwd))
+		exec.Command("sudo", "sed", "-i", fmt.Sprintf("/%s/d", escapedLine), globalCaddyPath).Run()
+		PrintInfo(fmt.Sprintf("%s/.pilot/Caddyfile removed from %s.", pwd, globalCaddyPath))
 		os.RemoveAll(".pilot")
 		PrintInfo(".pilot directory removed.")
 		exec.Command("sudo", "systemctl", "restart", "frankenphp").Run()

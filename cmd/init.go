@@ -77,8 +77,8 @@ var initCmd = &cobra.Command{
 		f2, _ := os.OpenFile("/tmp/caddy_append", os.O_CREATE|os.O_WRONLY, 0644)
 		f2.WriteString(importLine)
 		f2.Close()
-		exec.Command("bash", "-c", "cat /tmp/caddy_append | sudo tee -a /etc/frankenphp/Caddyfile").Run()
-		PrintInfo(fmt.Sprintf("Imported %s/.pilot/Caddyfile into /etc/frankenphp/Caddyfile", pwd))
+		exec.Command("bash", "-c", fmt.Sprintf("cat /tmp/caddy_append | sudo tee -a %s", globalCaddyPath)).Run()
+		PrintInfo(fmt.Sprintf("Imported %s/.pilot/Caddyfile into %s", pwd, globalCaddyPath))
 
 		exec.Command("sudo", "systemctl", "restart", "frankenphp").Run()
 		PrintInfo("Restarted frankenphp")
