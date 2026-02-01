@@ -89,11 +89,11 @@ pilot rm
 
 ### List Sites
 
+Displays the sites currently managed by Pilot, as well as any other sites found in the global Caddyfile.
+
 ```bash
 pilot list
 ```
-
-Displays the sites currently managed by Pilot, as well as any other sites found in the global Caddyfile.
 
 ### Global Service Control
 
@@ -101,16 +101,18 @@ Displays the sites currently managed by Pilot, as well as any other sites found 
 | --- | --- |
 | `pilot up` | Starts all managed services. |
 | `pilot down` | Stops all managed services. |
-| `pilot status` | Displays the current running status of the stack. |
+| `pilot status` | Displays the current running status of each service in the stack. |
 | `pilot status --simple` | Displays the current running status of the stack in a more compact format for scripting. |
 
 ### Prerequisite Checks
+
+Checks for any missing system dependencies and suggests how to resolve them.
 
 ```bash
 pilot diagnose
 ```
 
-Checks for any missing system dependencies and suggests how to resolve them. Preflight checks are also run for most commands.
+Preflight checks are also run for most commands.
 
 ---
 
@@ -132,6 +134,7 @@ While inspired by Valet, Pilot differs in several key areas:
 * **Service Manager**: Native **Systemd** integration for Linux instead of macOS `launchd`.
 * **DNS**: Explicitly manages `/etc/hosts` for transparency rather than running a background `dnsmasq` proxy.
 * **Configuration**: Stores site-specific settings and certs within a project-local `.pilot` folder instead of a global hidden directory.
+* **Binary**: It's written go and installed as a single self-contained binary rather than a php application.
 
 ---
 
