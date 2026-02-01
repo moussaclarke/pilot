@@ -174,7 +174,7 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 - [ ] Site info command
 - [ ] Better error handling
 - [ ] Tests
-- [ ] Changelog
+- [x] Changelog
 - [x] More documentation - including .pilot directory structure, overview of the stack
 
 ## Current Non-goals
