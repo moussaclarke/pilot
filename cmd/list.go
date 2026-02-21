@@ -19,6 +19,7 @@ type SiteInfo struct {
 	PilotExists bool
 	CaddyExists bool
 	Certs       bool
+	Hosts       bool
 }
 
 func init() {
@@ -55,23 +56,28 @@ var listCmd = &cobra.Command{
 				}
 				return lipgloss.NewStyle().Padding(0, 1)
 			}).
-			Headers("DOMAIN", "PILOT", "CADDY", "CERTS", "PATH")
+			Headers("DOMAIN", "PILOT", "CADDY", "CERTS", "HOSTS", "PATH")
 
 		for _, site := range sites {
 			pilotStatus := "Yes"
 			certStatus := "OK"
 			caddyStatus := "OK"
+			hostsStatus := "OK"
 
 			if !site.PilotExists {
 				pilotStatus = "No"
 				certStatus = "?"
 				caddyStatus = "?"
+				hostsStatus = "?"
 			} else {
 				if !site.CaddyExists {
 					caddyStatus = "MISSING"
 				}
 				if !site.Certs {
 					certStatus = "MISSING"
+				}
+				if !site.Hosts {
+					hostsStatus = "MISSING"
 				}
 			}
 
@@ -80,6 +86,7 @@ var listCmd = &cobra.Command{
 				pilotStatus,
 				caddyStatus,
 				certStatus,
+				hostsStatus,
 				site.Path,
 			)
 		}
@@ -120,10 +127,19 @@ func getManagedSites() ([]SiteInfo, error) {
 
 				certStatus := false
 				caddyStatus := false
+				hostsStatus := false
 
 				// Check filesystem for actual presence of files
 				if _, err := os.Stat(configPath); err == nil {
 					caddyStatus = true
+				}
+
+				// check /etc/hosts file for presence of the site domain
+				if _, err := os.Stat("/etc/hosts"); err == nil {
+					hosts, _ := os.ReadFile("/etc/hosts")
+					if strings.Contains(string(hosts), domain) {
+						hostsStatus = true
+					}
 				}
 
 				if pilotExists {
@@ -140,6 +156,7 @@ func getManagedSites() ([]SiteInfo, error) {
 					PilotExists: pilotExists,
 					CaddyExists: caddyStatus,
 					Certs:       certStatus,
+					Hosts:       hostsStatus,
 				})
 			}
 		}
