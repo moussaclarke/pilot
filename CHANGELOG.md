@@ -1,4 +1,13 @@
+## [0.5.5] - 2026-02-21
+
+### 🚜 Refactor
+
+- Hosts file var
 ## [0.5.4] - 2026-02-21
+
+### 🚀 Features
+
+- Add etc hosts to list
 
 ### 📚 Documentation
 
