@@ -1,6 +1,6 @@
 # Pilot
 
-🧑‍✈️ Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a seamless local environment similar to Laravel Valet, but tailored specifically for Linux systemd and Homebrew services.
+🧑‍✈️ Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a locally installed php environment similar to Laravel Valet, but tailored specifically for Linux systemd and Homebrew services.
 
 > [!IMPORTANT]
 > **Warning:** This tool is highly opinionated and strictly coupled to my specific local machine configuration. It assumes exact naming conventions for services and specific installation methods.
