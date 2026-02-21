@@ -17,7 +17,7 @@ func init() {
 var initCmd = &cobra.Command{
 	Use:   "init [domain]",
 	Short: "Initialise a new site configuration",
-	Long:  "Initialise a new site configuration.\nRun this command from your project root. It creates a .pilot directory, updates /etc/hosts, creates certs, creates a Caddyfile and imports it into the global Caddyfile. Finally it restarts the frankenphp server.",
+	Long:  "Initialise a new site configuration.\nRun this command from your project root. It creates a .pilot directory, updates hosts file, creates certs, creates a Caddyfile and imports it into the global Caddyfile. Finally it restarts the frankenphp server.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		reqs := []string{"mkcert", "systemctl", "frankenphp"}
@@ -40,9 +40,9 @@ var initCmd = &cobra.Command{
 		}
 
 		// Check /etc/hosts
-		hostsContent, _ := os.ReadFile("/etc/hosts")
+		hostsContent, _ := os.ReadFile(hostsPath)
 		if strings.Contains(string(hostsContent), domain) {
-			PrintError(fmt.Sprintf("Domain %s already exists in /etc/hosts", domain))
+			PrintError(fmt.Sprintf("Domain %s already exists in %s", domain, hostsPath))
 			PrintDim("Please remove it manually and try again.")
 			return
 		}
@@ -59,8 +59,8 @@ var initCmd = &cobra.Command{
 		f, _ := os.OpenFile("/tmp/hosts_append", os.O_CREATE|os.O_WRONLY, 0644)
 		f.WriteString(hostEntry)
 		f.Close()
-		exec.Command("bash", "-c", "cat /tmp/hosts_append | sudo tee -a /etc/hosts").Run()
-		PrintInfo(fmt.Sprintf("Added %s to /etc/hosts", domain))
+		exec.Command("bash", "-c", fmt.Sprintf("cat /tmp/hosts_append | sudo tee -a %s", hostsPath)).Run()
+		PrintInfo(fmt.Sprintf("Added %s to %s", domain, hostsPath))
 		// Create certs
 		os.Mkdir(".pilot", 0755)
 		exec.Command("mkcert", "-cert-file", ".pilot/"+domain+".crt", "-key-file", ".pilot/"+domain+".key", domain).Run()

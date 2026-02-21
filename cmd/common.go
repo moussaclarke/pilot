@@ -10,6 +10,7 @@ import (
 
 const brewPath = "/home/linuxbrew/.linuxbrew/bin/brew"
 const globalCaddyPath = "/etc/frankenphp/Caddyfile"
+const hostsPath = "/etc/hosts"
 
 type CheckType int
 
