@@ -174,7 +174,9 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 - [ ] Extend prerequisite checks to also check for global conf files /etc/hosts and /etc/frankenphp/Caddyfile
 - [ ] Check service status before up/down
 - [x] Site list command
+- [x] Diagnose command
 - [ ] Site info command
+- [ ] Handling lab/reverse proxy setups (i.e. no .pilot directory, everything in a visible top dir)
 - [ ] Better error handling
 - [ ] Tests
 - [x] Changelog
@@ -182,6 +184,6 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 
 ## Current Non-goals
 
-- Other OSes or architectures. Or other people's machines in general.
+- Other OSes or architectures. Or other people's machines in general. Might look at MacOS eventually though.
 - Multi version support (e.g. there will be no `valet use` equivalent)
 - DNSmasq (KISS `/etc/hosts` for now)
