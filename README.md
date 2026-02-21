@@ -46,11 +46,11 @@ The installation method isn't important except for mailpit, which **must** be in
 * **mailpit** (installed via homebrew)
 * **garage**
 
-On my machine I have these installed as follows as at the time of writing:
+On my machine I have these installed as follows as at the time of writing (YMMV):
 - homebrew: go, mailpit, garage (but with manual root service unit)
 - apt: mysql, postgresql, mkcert
 - deb/apt: typesense
-- manual install: frankenphp (but with manual root service unit)
+- manual install: frankenphp (with manual root service unit)
 
 ### Build and install
 
@@ -131,10 +131,10 @@ Pilot transforms your local machine into a development server by managing three 
 While inspired by Valet, Pilot differs in several key areas:
 
 * **Web Server**: Uses **FrankenPHP** instead of Nginx + PHP-FPM.
-* **Service Manager**: Native **Systemd** integration for Linux instead of macOS `launchd`.
-* **DNS**: Explicitly manages `/etc/hosts` for transparency rather than running a background `dnsmasq` proxy.
+* **Service Manager**: Native **Systemd** integration for Linux instead of homebrew-managed macOS `launctl` services.
+* **DNS**: Explicitly manages `/etc/hosts` rather than running a background `dnsmasq` proxy.
 * **Configuration**: Stores site-specific settings and certs within a project-local `.pilot` folder instead of a global hidden directory.
-* **Binary**: It's written go and installed as a single self-contained binary rather than a php application.
+* **Binary**: It's written in go and installed as a single self-contained binary rather than a php application.
 
 ---
 
@@ -176,7 +176,7 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 - [x] Site list command
 - [x] Diagnose command
 - [ ] Site info command
-- [ ] Handling lab/reverse proxy setups (i.e. no .pilot directory, everything in a visible top dir)
+- [ ] Handling lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
 - [ ] Better error handling
 - [ ] Tests
 - [x] Changelog
