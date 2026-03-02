@@ -1,8 +1,27 @@
-## [0.5.5] - 2026-02-21
+## [0.5.6] - 2026-03-02
+
+### 🚀 Features
+
+- Let list handle reverse proxy sites without .pilot dir
 
 ### 🚜 Refactor
 
 - Hosts file var
+
+### 📚 Documentation
+
+- Update readme
+- Update readme
+- Update readme
+- Update todo in readme
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version
+- Add gpl
+- Rename vars for clarity
+- Show hosts status if lab/reverse proxy site
+- Bump version
 ## [0.5.4] - 2026-02-21
 
 ### 🚀 Features
