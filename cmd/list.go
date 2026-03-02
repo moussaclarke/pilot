@@ -66,7 +66,6 @@ var listCmd = &cobra.Command{
 
 			if !site.PilotExists {
 				pilotStatus = "No"
-				hostsStatus = "?"
 			} else {
 				if !site.CaddyExists {
 					caddyStatus = "MISSING"
