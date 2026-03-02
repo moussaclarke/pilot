@@ -88,10 +88,15 @@ var initCmd = &cobra.Command{
 			}
 		}
 
-		// Check certs folder (only for proxy mode)
+		// Check certs folder and Caddyfile (only for proxy mode)
 		if isProxyMode {
 			if _, err := os.Stat("certs"); !os.IsNotExist(err) {
 				PrintError("certs folder already exists.")
+				PrintDim("Please remove it manually and try again.")
+				return
+			}
+			if _, err := os.Stat("Caddyfile"); !os.IsNotExist(err) {
+				PrintError("Caddyfile already exists.")
 				PrintDim("Please remove it manually and try again.")
 				return
 			}
