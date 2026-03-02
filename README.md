@@ -1,6 +1,6 @@
 # Pilot
 
-🧑‍✈️ Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a locally installed php environment similar to Laravel Valet, but tailored specifically for Linux systemd and Homebrew services.
+🧑‍✈️ Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a locally installed php environment similar to Laravel Valet.
 
 > [!IMPORTANT]
 > **Warning:** This tool is highly opinionated and strictly coupled to my specific local machine configuration. It assumes exact naming conventions for services and specific installation methods.
@@ -129,7 +129,7 @@ Pilot transforms your local machine into a development server by managing three 
 
 1. **Domain Resolution**: Maps custom domains to `127.0.0.1` via `/etc/hosts`.
 2. **Request Handling**: Uses **FrankenPHP** as a web server and PHP runtime.
-3. **Automatic SSL**: Uses `mkcert` to generate locally trusted certificates for every site, ensuring a full HTTPS development experience.
+3. **Automatic SSL**: Uses `mkcert` to generate locally trusted certificates for every site, so https works.
 
 ### Comparison to Laravel Valet
 
@@ -160,6 +160,8 @@ This directory contains:
 #### Non-PHP Projects
 
 Although it defaults to PHP, Pilot can manage any project. By editing the generated `.pilot/Caddyfile`, you can use it as a **reverse proxy** for Node.js, Go or Python applications, or as a **static file server** for frontend builds.
+
+See also `pilot init --proxy` for reverse proxy setups where you're not wihin a project repo.
 
 ---
 
