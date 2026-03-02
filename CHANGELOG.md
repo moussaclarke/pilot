@@ -1,8 +1,35 @@
+## [0.6.0] - 2026-03-02
+
+### 🚀 Features
+
+- Handle reverse proxy init
+- Rm now handles reverse proxy setup
+
+### 📚 Documentation
+
+- Update help for init
+
+### ⚙️ Miscellaneous Tasks
+
+- Update readme
+- Also check for Caddyfile before init
 ## [0.5.6] - 2026-03-02
 
 ### 🚀 Features
 
 - Let list handle reverse proxy sites without .pilot dir
+
+### 📚 Documentation
+
+- Update todo in readme
+
+### ⚙️ Miscellaneous Tasks
+
+- Rename vars for clarity
+- Show hosts status if lab/reverse proxy site
+- Bump version
+- Update changelog
+## [0.5.5] - 2026-02-21
 
 ### 🚜 Refactor
 
@@ -13,15 +40,11 @@
 - Update readme
 - Update readme
 - Update readme
-- Update todo in readme
 
 ### ⚙️ Miscellaneous Tasks
 
 - Bump version
 - Add gpl
-- Rename vars for clarity
-- Show hosts status if lab/reverse proxy site
-- Bump version
 ## [0.5.4] - 2026-02-21
 
 ### 🚀 Features

@@ -78,9 +78,15 @@ pilot init example.test
 
 You can edit the Caddyfile manually if you need any kind of custom configuration.
 
+You can also optionally create a reverse proxy setup without a `.pilot` directory. This is useful if you want to set up a domain for a service running on some ad hoc port rather than from within a project repo.
+
+```bash
+pilot init example.test --proxy --port 1234
+```
+
 ### Site Removal
 
-Removes the `.pilot` configuration, cleans the hosts file entry, removes the Caddyfile import and restarts the web server.
+Removes the `.pilot` configuration, cleans the hosts file entry, removes the Caddyfile import and restarts the web server. Will also detect a reverse proxy setup without a `.pilot` directory.
 
 ```bash
 pilot rm
@@ -176,7 +182,8 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 - [x] Diagnose command
 - [ ] Site info command
 - [x] List handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
-- [ ] Init handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
+- [x] Init handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
+- [x] Rm handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
 - [ ] Better error handling
 - [ ] Tests
 - [x] Changelog
