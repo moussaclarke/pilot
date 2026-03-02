@@ -1,3 +1,8 @@
+## [0.6.1] - 2026-03-02
+
+### ⚙️ Miscellaneous Tasks
+
+- Update readme
 ## [0.6.0] - 2026-03-02
 
 ### 🚀 Features
@@ -13,6 +18,7 @@
 
 - Update readme
 - Also check for Caddyfile before init
+- Bump version, update readme and changelog
 ## [0.5.6] - 2026-03-02
 
 ### 🚀 Features

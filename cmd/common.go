@@ -30,12 +30,12 @@ type Requirement struct {
 var requirements = []Requirement{
 	{Name: "Systemd", Type: Binary, Identifier: "systemctl", Remedy: "Your machine needs to be running systemd"},
 	{Name: "Homebrew", Type: Binary, Identifier: "brew", Remedy: fmt.Sprintf("Ensure Homebrew is installed and accessible at %s", brewPath)},
-	{Name: "FrankenPHP", Type: SystemdUnit, Identifier: "frankenphp", Remedy: "Install binary and ensure /etc/systemd/system/frankenphp.service exists"},
+	{Name: "FrankenPHP", Type: SystemdUnit, Identifier: "frankenphp", Remedy: "Visit https:/frankenphp.dev and follow the deb installation instructions and ensure /etc/systemd/system/frankenphp.service exists"},
 	{Name: "MySQL", Type: SystemdUnit, Identifier: "mysql", Remedy: "Install via 'sudo apt install mysql' and ensure /etc/systemd/system/mysql.service exists"},
 	{Name: "PostgreSQL", Type: SystemdUnit, Identifier: "postgresql", Remedy: "Install via 'sudo apt install postgresql' and ensure /etc/systemd/system/postgresql.service exists"},
 	{Name: "Typesense", Type: SystemdUnit, Identifier: "typesense-server", Remedy: "Visit https://typesense.org and install via apt/deb and ensure /etc/systemd/system/typesense-server.service exists"},
-	{Name: "Garage", Type: SystemdUnit, Identifier: "garage", Remedy: "Ensure manual systemd unit is configured for Garage binary at /etc/systemd/system/garage.service"},
-	{Name: "Mailpit", Type: BrewFormula, Identifier: "mailpit", Remedy: "Ensure Homebrew is available and install via 'brew install mailpit'"},
+	{Name: "Garage", Type: SystemdUnit, Identifier: "garage", Remedy: "Ensure garage is installed via e.g. 'brew install garage' but that a manual systemd unit is configured for it at /etc/systemd/system/garage.service"},
+	{Name: "Mailpit", Type: BrewFormula, Identifier: "mailpit", Remedy: "Ensure Homebrew is available and install mailpit via 'brew install mailpit'"},
 	{Name: "mkcert", Type: Binary, Identifier: "mkcert", Remedy: "Install via 'sudo apt install mkcert' and run 'mkcert -install'"},
 }
 
