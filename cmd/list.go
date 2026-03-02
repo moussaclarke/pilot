@@ -66,8 +66,6 @@ var listCmd = &cobra.Command{
 
 			if !site.PilotExists {
 				pilotStatus = "No"
-				certStatus = "?"
-				caddyStatus = "?"
 				hostsStatus = "?"
 			} else {
 				if !site.CaddyExists {
@@ -145,6 +143,13 @@ func getManagedSites() ([]SiteInfo, error) {
 				if pilotExists {
 					pilotDir := filepath.Join(projectRoot, ".pilot")
 					certPath := filepath.Join(pilotDir, domain+".crt")
+					if _, err := os.Stat(certPath); err == nil {
+						certStatus = true
+					}
+				} else {
+					// Check for certificate existence in a certs directory at the project root
+					certDir := filepath.Join(projectRoot, "certs")
+					certPath := filepath.Join(certDir, domain+".crt")
 					if _, err := os.Stat(certPath); err == nil {
 						certStatus = true
 					}
