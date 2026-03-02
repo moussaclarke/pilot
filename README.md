@@ -176,7 +176,8 @@ Although it defaults to PHP, Pilot can manage any project. By editing the genera
 - [x] Site list command
 - [x] Diagnose command
 - [ ] Site info command
-- [ ] Handling lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
+- [x] List handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
+- [ ] Init handle lab/reverse proxy/non php setups explicitly (i.e. no .pilot directory, everything in a visible top dir)
 - [ ] Better error handling
 - [ ] Tests
 - [x] Changelog
