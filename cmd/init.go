@@ -150,9 +150,7 @@ var initCmd = &cobra.Command{
 		} else {
 			importLine = fmt.Sprintf("\nimport %s/.pilot/Caddyfile", pwd)
 		}
-		f2, _ := os.OpenFile("/tmp/caddy_append", os.O_CREATE|os.O_WRONLY, 0644)
-		f2.WriteString(importLine)
-		f2.Close()
+		os.WriteFile("/tmp/caddy_append", []byte(importLine), 0644)
 		exec.Command("bash", "-c", fmt.Sprintf("cat /tmp/caddy_append | sudo tee -a %s", globalCaddyPath)).Run()
 		PrintInfo(fmt.Sprintf("Imported Caddyfile into %s", globalCaddyPath))
 
