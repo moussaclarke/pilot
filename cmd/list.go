@@ -105,21 +105,21 @@ func getManagedSites() ([]SiteInfo, error) {
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if strings.HasPrefix(line, "import ") {
-			configPath := strings.TrimSpace(strings.Replace(line, "import ", "", 1))
+			caddyFilePath := strings.TrimSpace(strings.Replace(line, "import ", "", 1))
 
 			var projectRoot string
 			var pilotExists bool
 
 			// Detect if this is a Pilot-managed site or a standard Caddyfile import
-			if strings.Contains(configPath, "/.pilot/Caddyfile") {
-				projectRoot = filepath.Dir(filepath.Dir(configPath))
+			if strings.Contains(caddyFilePath, "/.pilot/Caddyfile") {
+				projectRoot = filepath.Dir(filepath.Dir(caddyFilePath))
 				pilotExists = true
 			} else {
-				projectRoot = filepath.Dir(configPath)
+				projectRoot = filepath.Dir(caddyFilePath)
 				pilotExists = false
 			}
 
-			domains := getDomainsFromLocalCaddy(configPath)
+			domains := getDomainsFromLocalCaddy(caddyFilePath)
 
 			for _, domain := range domains {
 
@@ -127,8 +127,8 @@ func getManagedSites() ([]SiteInfo, error) {
 				caddyStatus := false
 				hostsStatus := false
 
-				// Check filesystem for actual presence of files
-				if _, err := os.Stat(configPath); err == nil {
+				// Check filesystem for actual presence of caddy file
+				if _, err := os.Stat(caddyFilePath); err == nil {
 					caddyStatus = true
 				}
 
