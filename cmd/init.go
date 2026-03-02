@@ -26,7 +26,7 @@ var (
 var initCmd = &cobra.Command{
 	Use:   "init [domain]",
 	Short: "Initialise a new site configuration",
-	Long:  "Initialise a new site configuration.\nRun this command from your project root. It creates a .pilot directory, updates hosts file, creates certs, creates a Caddyfile and imports it into the global Caddyfile. Finally it restarts the frankenphp server.",
+	Long:  "Initialise a new site configuration.\nRun this command from your project root. It creates a .pilot directory, updates hosts file, creates certs, creates a Caddyfile and imports it into the global Caddyfile. Finally it restarts the frankenphp server. You can also optionally use it to set up a reverse proxy without a .pilot directory - useful for local services",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		reqs := []string{"mkcert", "systemctl", "frankenphp"}
