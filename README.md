@@ -49,8 +49,7 @@ The installation method isn't important except for mailpit, which **must** be in
 On my machine I have these installed as follows as at the time of writing (YMMV):
 - homebrew: go, mailpit, garage (but with manual root service unit)
 - apt: mysql, postgresql, mkcert
-- deb/apt: typesense
-- manual install: frankenphp (with manual root service unit)
+- deb/apt: typesense, frankenphp (with manual root service unit)
 
 ### Build and install
 
