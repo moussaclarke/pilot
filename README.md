@@ -35,7 +35,7 @@ The installation method isn't important except for mailpit, which **must** be in
 
 ### Prerequisites
 
-* **Go** (to build this binary from source)
+* **go** (to build this binary from source)
 * **mkcert**
 * **Homebrew**
 * **Systemd**
