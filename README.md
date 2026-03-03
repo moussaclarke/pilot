@@ -3,7 +3,7 @@
 🧑‍✈️ Pilot is a lightweight, opinionated development manager built for Ubuntu. It orchestrates a modern stack using **FrankenPHP** to provide a locally installed php environment similar to Laravel Valet.
 
 > [!IMPORTANT]
-> **Warning:** This tool is highly opinionated and strictly coupled to my specific local machine configuration. It assumes exact naming conventions for services and specific installation methods.
+> **Warning:** This tool is highly opinionated and strictly coupled to my specific local machine configuration. It assumes exact naming conventions for services and specific installation methods. If you run systemd and homebrew, then it might work on your machine but YMMV.
 
 ---
 
@@ -47,9 +47,9 @@ The installation method isn't important except for mailpit, which **must** be in
 * **garage**
 
 On my machine I have these installed as follows as at the time of writing (YMMV):
-- homebrew: go, mailpit, garage (but with manual root service unit)
+- homebrew: go, mailpit, garage (latter with manual root service unit)
 - apt: mysql, postgresql, mkcert
-- deb/apt: typesense, frankenphp (with manual root service unit)
+- deb/apt: typesense, frankenphp (latter with manual root service unit)
 
 ### Build and install
 
@@ -193,6 +193,7 @@ See also `pilot init --proxy` for reverse proxy setups where you're not wihin a 
 
 ## Current Non-goals
 
+- Installing dependencies (i.e. there will be no `valet install` equivalent)
 - Other OSes or architectures. Or other people's machines in general. Might look at MacOS eventually though.
-- Multi version support (e.g. there will be no `valet use` equivalent)
+- Multi version support (i.e. there will be no `valet use` equivalent)
 - DNSmasq (KISS `/etc/hosts` for now)
