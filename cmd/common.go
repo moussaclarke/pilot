@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 const brewPath = "/home/linuxbrew/.linuxbrew/bin/brew"
@@ -104,6 +105,9 @@ func runServiceCommand(name string, arg ...string) ([]byte, error) {
 
 	// Inherit environment to ensure Homebrew variables are present
 	cmd.Env = os.Environ()
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Setsid: true, // create new session, detach from controlling terminal
+	}
 
 	out, err := cmd.Output()
 
