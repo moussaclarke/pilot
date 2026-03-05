@@ -1,8 +1,22 @@
+## [0.6.2] - 2026-03-05
+
+### 🐛 Bug Fixes
+
+- Detach subprocess sessions to prevent SIGTTOU hang in non-TTY envs
+
+### 📚 Documentation
+
+- Update readme
+
+### ⚙️ Miscellaneous Tasks
+
+- Capitalisation
 ## [0.6.1] - 2026-03-02
 
 ### ⚙️ Miscellaneous Tasks
 
 - Update readme
+- Bump version
 ## [0.6.0] - 2026-03-02
 
 ### 🚀 Features
